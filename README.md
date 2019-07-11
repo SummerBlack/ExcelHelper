@@ -38,8 +38,7 @@ void closeExcel();<br>
   excelHelper.readFromFile(file4Read, value, range);
   // 操作完成，关闭文件
   excelHelper.closeExcel();
-```  
-
+```
 ## 文件的写入
 文件的写入可以通过以下几个方法实现：
 > （1）void setCellValue(int row, int column, const QVariant &value);<br>
@@ -71,8 +70,10 @@ void closeExcel();<br>
     // 操作完成，关闭文件
     excelHelper.closeExcel();
 ```
-在实际应用中，常常需要将所生产的数据按照指定格式存储到Excel中，如下图所示，通过ExcelHelper类可以方便实现。
-    ```cpp
+### 文件写入应用
+  在实际应用中，常常需要将所生产的数据按照指定格式存储到Excel中，如下图所示，通过ExcelHelper类可以方便实现。<br>
+              ![](https://github.com/SummerBlack/ExcelHelper/raw/master/excel.png) <br>
+```cpp
     ExcelHelper excelHelper;
     // 打开Excel文件
     excelHelper.openExcel(filepath);
@@ -126,4 +127,8 @@ void closeExcel();<br>
     excelHelper.saveExcel(filepath);
     excelHelper.closeExcel();
 ```
-## 多线程的
+## 多线程的注意事项
+多线程中通过ExcelHelper操作Excel，必须先调用CoInitializeEx(NULL, COINIT_MULTITHREADED)初始化
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    ExcelHelper excelHelper;
+    excelHelper.openExcel(mFileName);
