@@ -1,5 +1,5 @@
 # ExcelHelper
-Qt平台上Excel读写帮助类
+Qt平台上Excel读写帮助类<br>
 QAxObject是Qt提供的包装COM组件的类，通过COM操作Excel需要使用QAxObject类，使用此类还需要在pro文件增加“QT += axcontainer”
 ## 打开文件与关闭
 void openExcel(const QString &fileName);<br>
