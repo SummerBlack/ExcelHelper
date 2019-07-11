@@ -127,8 +127,12 @@ void closeExcel();<br>
     excelHelper.saveExcel(filepath);
     excelHelper.closeExcel();
 ```
-## 多线程的注意事项
-多线程中通过ExcelHelper操作Excel，必须先调用CoInitializeEx(NULL, COINIT_MULTITHREADED)初始化
+## 注意事项
+* 分线程中通过ExcelHelper操作Excel，必须先调用CoInitializeEx(NULL, COINIT_MULTITHREADED)初始化
+```cpp
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     ExcelHelper excelHelper;
     excelHelper.openExcel(mFileName);
+```
+* 在多次写入较大数据时，可以先通过setTableValue保存到内存中，等写完了再调用saveExcel写入到本地文件中，因为saveExcel将数据写入到磁盘中比较耗时
+
