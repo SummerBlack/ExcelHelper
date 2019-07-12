@@ -134,5 +134,5 @@ void closeExcel();<br>
     ExcelHelper excelHelper;
     excelHelper.openExcel(mFileName);
 ```
-* 在多次写入较大数据时，可以先通过setTableValue将数据保存到内存中，等存完了再调用saveExcel写入到本地文件中，因为saveExcel将数据写入到磁盘中比较耗时
+* 在多次写入数据至同一个Excel文件时，可以先通过setTableValue将数据保存到内存中，等存完了再调用saveExcel写入到本地文件中，因为saveExcel将数据写入到磁盘中比较耗时，测试发现setTableValue的耗时与本次存入的数据量大小有关，而saveExcel与该Excel文件的总大小有关，即一个很大的文件即使只插入一个数据，然后调用saveExcel保存到磁盘中也会很慢。
 
