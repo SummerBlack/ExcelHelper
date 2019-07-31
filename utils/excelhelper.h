@@ -20,20 +20,12 @@ public:
     void openExcel(const QString &fileName);
 
     /**
-     * @brief 设置表格中某一行某一列的值
-     * @param row
-     * @param column
-     * @param value
-     */
-    void setCellValue(int row, int column, const QVariant &value);
-
-    /**
      * @brief 获取表格中某一行某一列的值
      * @param row
      * @param column
      * @return
      */
-    QVariant getCellValue(int row, int column) const;
+    QVariant readCellValue(int row, int column) const;
 
     /**
      * @brief 查询Excel中的数据并保存到value中，如果指定查询范围就按照指定范围查，如果没有就查询表中所有数据
@@ -41,16 +33,7 @@ public:
      * @param range 查询的范围（如A1:Z10表示从第一行第一列到第10行第26列），默认为空，即查询所有
      * @return 是否读取成功
      */
-    bool getTableValue(QList<QList<QVariant>> &value, const QString &range = "");
-
-    /**
-     * @brief 将values中的数据保存到Excel中
-     * @param values 需要保存的数据
-     * @param startRow 数据的起始行
-     * @param startColumn 数据的起始列
-     * @return 是否保存成功
-     */
-    bool setTableValue(QList<QList<QVariant>> &values, const int startRow = 1, const int startColumn = 1);
+    bool readTableValue(QList<QList<QVariant>> &value, const QString &range = "");
 
     /**
      * @brief 指定Excel文件名，读取其中数据保存至value中
@@ -60,6 +43,23 @@ public:
      * @return 是否读取成功
      */
     bool readFromFile(const QString &fileName, QList<QList<QVariant>> &value, const QString &range = "");
+
+    /**
+     * @brief 设置表格中某一行某一列的值
+     * @param row
+     * @param column
+     * @param value
+     */
+    void writeCellValue(int row, int column, const QVariant &value);
+
+    /**
+     * @brief 将values中的数据保存到Excel中
+     * @param values 需要保存的数据
+     * @param startRow 数据的起始行
+     * @param startColumn 数据的起始列
+     * @return 是否保存成功
+     */
+    bool writeTableValue(QList<QList<QVariant>> &values, const int startRow = 1, const int startColumn = 1);
 
     /**
      * @brief 将value数据写入到fileName文件中，文件如果不存在则新建

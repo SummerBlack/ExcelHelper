@@ -37,19 +37,13 @@ void ExcelHelper::openExcel(const QString &fileName)
     workSheet = workSheets->querySubObject("Item(int)", 1);
 }
 
-void ExcelHelper::setCellValue(int row, int column, const QVariant &value)
-{
-    QAxObject *cell = workSheet->querySubObject("Cells(int, int)", row, column);
-    cell->setProperty("Value", value);
-}
-
-QVariant ExcelHelper::getCellValue(int row, int column) const
+QVariant ExcelHelper::readCellValue(int row, int column) const
 {
     QAxObject *cell = workSheet->querySubObject("Cells(int, int)", row, column);
     return cell->property("Value");
 }
 
-bool ExcelHelper::getTableValue(QList<QList<QVariant>> &value, const QString &range)
+bool ExcelHelper::readTableValue(QList<QList<QVariant>> &value, const QString &range)
 {
     QVariant var;
     QAxObject *userRange;
@@ -68,7 +62,30 @@ bool ExcelHelper::getTableValue(QList<QList<QVariant>> &value, const QString &ra
     return true;
 }
 
-bool ExcelHelper::setTableValue(QList<QList<QVariant> > &values, const int startRow, const int startColumn)
+bool ExcelHelper::readFromFile(const QString &fileName, QList<QList<QVariant>> &value, const QString &range)
+{
+    QFile file(fileName);
+
+    if(!file.exists()){
+        return false;
+    }
+
+    workBook = workBooks->querySubObject("Open(const QString &)", fileName);
+    //默认有一个sheet
+    workSheets = workBook->querySubObject("Sheets");
+    workSheet = workSheets->querySubObject("Item(int)", 1);
+
+    bool result = readTableValue(value, range);
+    return result;
+}
+
+void ExcelHelper::writeCellValue(int row, int column, const QVariant &value)
+{
+    QAxObject *cell = workSheet->querySubObject("Cells(int, int)", row, column);
+    cell->setProperty("Value", value);
+}
+
+bool ExcelHelper::writeTableValue(QList<QList<QVariant> > &values, const int startRow, const int startColumn)
 {
     qint64 startT = QDateTime::currentMSecsSinceEpoch();
     if(values.size() <= 0){
@@ -113,29 +130,12 @@ bool ExcelHelper::setTableValue(QList<QList<QVariant> > &values, const int start
     return succ;
 }
 
-bool ExcelHelper::readFromFile(const QString &fileName, QList<QList<QVariant>> &value, const QString &range)
-{
-    QFile file(fileName);
-
-    if(!file.exists()){
-        return false;
-    }
-
-    workBook = workBooks->querySubObject("Open(const QString &)", fileName);
-    //默认有一个sheet
-    workSheets = workBook->querySubObject("Sheets");
-    workSheet = workSheets->querySubObject("Item(int)", 1);
-
-    bool result = getTableValue(value, range);
-    return result;
-}
-
 bool ExcelHelper::writeToFile(const QString &fileName, QList<QList<QVariant> > &values, const int startRow, const int startColumn)
 {
     // 新建或打开文件
     openExcel(fileName);
     // 保存数据
-    bool success = setTableValue(values, startRow, startColumn);
+    bool success = writeTableValue(values, startRow, startColumn);
     // 保存excel文件
     saveExcel(fileName);
 

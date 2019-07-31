@@ -53,12 +53,12 @@ void MainWindow::on_btn_write_clicked()
     // 打开Excel文件
     excelHelper.openExcel(filepath);
     // 向表格1行1列写入"Pitch"
-    excelHelper.setCellValue(1, 1, QVariant("Pitch"));
-    excelHelper.setCellValue(1, 2, 8);
-    excelHelper.setCellValue(2, 1, QVariant("Max Frequency"));
-    excelHelper.setCellValue(2, 2, 224);
-    excelHelper.setCellValue(3, 1, QVariant("Optimise Frequency AF"));
-    excelHelper.setCellValue(3, 2, 112);
+    excelHelper.writeCellValue(1, 1, QVariant("Pitch"));
+    excelHelper.writeCellValue(1, 2, 8);
+    excelHelper.writeCellValue(2, 1, QVariant("Max Frequency"));
+    excelHelper.writeCellValue(2, 2, 224);
+    excelHelper.writeCellValue(3, 1, QVariant("Optimise Frequency AF"));
+    excelHelper.writeCellValue(3, 2, 112);
 
     int startRow = 0;
     int startCol = 0;
@@ -68,9 +68,9 @@ void MainWindow::on_btn_write_clicked()
     excelHelper.getRange(startRow, startCol, rowCount, colCount);
     int currentRow = startRow + rowCount;
 
-    excelHelper.setCellValue(currentRow, 1, QVariant("[Measurement]"));
-    excelHelper.setCellValue(currentRow + 1, 1, QVariant("Position"));
-    excelHelper.setCellValue(currentRow + 1, 2, 1);
+    excelHelper.writeCellValue(currentRow, 1, QVariant("[Measurement]"));
+    excelHelper.writeCellValue(currentRow + 1, 1, QVariant("Position"));
+    excelHelper.writeCellValue(currentRow + 1, 2, 1);
     // 保存数据
     QList<QList<QVariant>> datas;
     for (int step = 1; step < 2; ++step) {
@@ -97,7 +97,7 @@ void MainWindow::on_btn_write_clicked()
         }
     }
     // 写入缓存
-    excelHelper.setTableValue(datas, currentRow + 2, 1);
+    excelHelper.writeTableValue(datas, currentRow + 2, 1);
     // 写入文件中
     excelHelper.saveExcel(filepath);
     excelHelper.closeExcel();
