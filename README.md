@@ -9,9 +9,9 @@ void closeExcel();<br>
 
 ## 文件的读取
 文件的读取可以通过以下几个方法实现：
-> （1）QVariant getCellValue(int row, int column) const;<br>
+> （1）QVariant readCellValue(int row, int column) const;<br>
 >     获取row行column列的单元格中的数据<br>
-> （2）bool getTableValue(QList<QList<QVariant>> &value, const QString &range = "");<br>
+> （2）bool readTableValue(QList<QList<QVariant>> &value, const QString &range = "");<br>
 >     读取指定范围内的单元格中的数据<br>
 > （3）bool readFromFile(const QString &fileName, QList<QList<QVariant>> &value, const QString &range = "");<br>
 >     指定Excel文件名，读取指定范围内的数据保存至value中<br>
@@ -24,16 +24,16 @@ void closeExcel();<br>
   ExcelHelper excelHelper;
   excelHelper.openExcel(file4Read);
   // 读取某个单元格
-  QVariant value = excelHelper.getCellValue(3, 5);
+  QVariant value = excelHelper.readCellValue(3, 5);
   // 读取指定范围内的单元格中的数据
   QList<QList<QVariant>> vars;
   // 读取1行1列至5行4列的数据
-  excelHelper.getTableValue(vars, "A1:D5");
+  excelHelper.readTableValue(vars, "A1:D5");
   // 如果觉得"A1:D5"的写法不够直观，可以采用如下转换
   QString range = excelHelper.convertToRangeName(1, 1, 5, 4);
-  excelHelper.getTableValue(vars, range);
+  excelHelper.readTableValue(vars, range);
   
-  // readFromFile本质上就是openExcel加getTableValue，上述的写法可以直接写作
+  // readFromFile本质上就是openExcel加readTableValue，上述的写法可以直接写作
   ExcelHelper excelHelper;
   excelHelper.readFromFile(file4Read, value, range);
   // 操作完成，关闭文件
@@ -41,9 +41,9 @@ void closeExcel();<br>
 ```
 ## 文件的写入
 文件的写入可以通过以下几个方法实现：
-> （1）void setCellValue(int row, int column, const QVariant &value);<br>
+> （1）void writeCellValue(int row, int column, const QVariant &value);<br>
 >     将数据写入row行column列的单元格中<br>
-> （2）bool setTableValue(QList<QList<QVariant>> &values, const int startRow = 1, const int startColumn = 1);<br>
+> （2）bool writeTableValue(QList<QList<QVariant>> &values, const int startRow = 1, const int startColumn = 1);<br>
 >     将一组数据写入到Excel表格中<br>
 > （3）bool writeToFile(const QString &fileName, QList<QList<QVariant>> &values,const int startRow = 1, const int startColumn = 1);<br>
 >     将一组数据写入到指定的Excel文件中<br>
@@ -56,10 +56,10 @@ void closeExcel();<br>
     // 向某个单元格写入数据
     ExcelHelper excelHelper;
     excelHelper.openExcel(file4Write);
-    excelHelper.setCellValue(1, 1, QVariant("First"));
+    excelHelper.writeCellValue(1, 1, QVariant("First"));
     
     // 向excel表格中写入一组数据
-    excelHelper.setTableValue(vars, 2, 1);
+    excelHelper.writeTableValue(vars, 2, 1);
     
     // 写入到Excel文件中
     excelHelper.saveExcel(file4Write);
@@ -78,12 +78,12 @@ void closeExcel();<br>
     // 打开Excel文件
     excelHelper.openExcel(filepath);
     // 向表格1行1列写入"Pitch"
-    excelHelper.setCellValue(1, 1, QVariant("Pitch"));
-    excelHelper.setCellValue(1, 2, 8);
-    excelHelper.setCellValue(2, 1, QVariant("Max Frequency"));
-    excelHelper.setCellValue(2, 2, 224);
-    excelHelper.setCellValue(3, 1, QVariant("Optimise Frequency AF"));
-    excelHelper.setCellValue(3, 2, 112);
+    excelHelper.writeCellValue(1, 1, QVariant("Pitch"));
+    excelHelper.writeCellValue(1, 2, 8);
+    excelHelper.writeCellValue(2, 1, QVariant("Max Frequency"));
+    excelHelper.writeCellValue(2, 2, 224);
+    excelHelper.writeCellValue(3, 1, QVariant("Optimise Frequency AF"));
+    excelHelper.writeCellValue(3, 2, 112);
 
     int startRow = 0;
     int startCol = 0;
@@ -93,9 +93,9 @@ void closeExcel();<br>
     excelHelper.getRange(startRow, startCol, rowCount, colCount);
     int currentRow = startRow + rowCount;
 
-    excelHelper.setCellValue(currentRow, 1, QVariant("[Measurement]"));
-    excelHelper.setCellValue(currentRow + 1, 1, QVariant("Position"));
-    excelHelper.setCellValue(currentRow + 1, 2, 1);
+    excelHelper.writeCellValue(currentRow, 1, QVariant("[Measurement]"));
+    excelHelper.writeCellValue(currentRow + 1, 1, QVariant("Position"));
+    excelHelper.writeCellValue(currentRow + 1, 2, 1);
     // 保存数据
     QList<QList<QVariant>> datas;
     for (int step = 1; step < 2; ++step) {
@@ -122,7 +122,7 @@ void closeExcel();<br>
         }
     }
     // 写入缓存
-    excelHelper.setTableValue(datas, currentRow + 2, 1);
+    excelHelper.writeTableValue(datas, currentRow + 2, 1);
     // 写入文件中
     excelHelper.saveExcel(filepath);
     excelHelper.closeExcel();
@@ -134,5 +134,5 @@ void closeExcel();<br>
     ExcelHelper excelHelper;
     excelHelper.openExcel(mFileName);
 ```
-* 在多次写入数据至同一个Excel文件时，可以先通过setTableValue将数据保存到内存中，等存完了再调用saveExcel写入到本地文件中，因为saveExcel将数据写入到磁盘中比较耗时，测试发现setTableValue的耗时与本次存入的数据量大小有关，而saveExcel与该Excel文件的总大小有关，即一个很大的文件即使只插入一个数据，然后调用saveExcel保存到磁盘中也会很慢。
+* 在多次写入数据至同一个Excel文件时，可以先通过writeTableValue将数据保存到内存中，等存完了再调用saveExcel写入到本地文件中，因为saveExcel将数据写入到磁盘中比较耗时，测试发现writeTableValue的耗时与本次存入的数据量大小有关，而saveExcel与该Excel文件的总大小有关，即一个很大的文件即使只插入一个数据，然后调用saveExcel保存到磁盘中也会很慢。
 
